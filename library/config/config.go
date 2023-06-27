@@ -10,21 +10,8 @@ var (
 	config *Config
 )
 
-type Daemon struct {
-	Pid string `yaml:"pid"`
-	Log string `yaml:"log"`
-}
-
 type Local struct {
 	Address string `yaml:"address"`
-}
-
-// 服务器地址
-type Server struct {
-	Url     string `yaml:"url"`
-	Secret  string `yaml:"secret"`
-	Address string `yaml:"address"`
-	PlayUrl string `yaml:"playurl"`
 }
 
 type Logger struct {
@@ -38,9 +25,7 @@ type Logger struct {
 }
 
 type Config struct {
-	Daemon
 	Local
-	Server
 	Logger
 }
 
@@ -56,22 +41,6 @@ func newConfig() *Config {
 
 func GetLocalAddress() string {
 	return config.Local.Address
-}
-
-func GetRestUrl() string {
-	return config.Server.Url
-}
-
-func GetRestAddress() string {
-	return config.Server.Address
-}
-
-func GetServerSecret() string {
-	return config.Server.Secret
-}
-
-func GetServerPlayUrl() string {
-	return config.Server.PlayUrl
 }
 
 func GetLoggerLevel() int {

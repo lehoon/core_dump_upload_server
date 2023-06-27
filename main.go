@@ -8,6 +8,7 @@ import (
 	"github.com/lehoon/core_dump_upload_server/v2/library/config"
 	"github.com/lehoon/core_dump_upload_server/v2/library/logger"
 	"github.com/lehoon/core_dump_upload_server/v2/routes"
+	md "github.com/lehoon/core_dump_upload_server/v2/routes/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -19,8 +20,8 @@ func main() {
 	route.Use(middleware.Logger)
 	route.Use(middleware.Recoverer)
 	route.Use(middleware.URLFormat)
-	route.Use(middleware.Compress(6, "gzip"))
-	//route.Use(md.RequestLoggerFilter)
+	//route.Use(middleware.Compress(6, "gzip"))
+	route.Use(md.RequestLoggerFilter)
 	//route.Use(render.SetContentType(render.ContentTypeJSON))
 
 	route.Get("/", func(w http.ResponseWriter, r *http.Request) {
