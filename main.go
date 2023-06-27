@@ -8,11 +8,9 @@ import (
 	"github.com/lehoon/core_dump_upload_server/v2/library/config"
 	"github.com/lehoon/core_dump_upload_server/v2/library/logger"
 	"github.com/lehoon/core_dump_upload_server/v2/routes"
-	md "github.com/lehoon/core_dump_upload_server/v2/routes/middleware"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/render"
 )
 
 func main() {
@@ -21,11 +19,22 @@ func main() {
 	route.Use(middleware.Logger)
 	route.Use(middleware.Recoverer)
 	route.Use(middleware.URLFormat)
-	route.Use(md.RequestLoggerFilter)
-	route.Use(render.SetContentType(render.ContentTypeJSON))
+	route.Use(middleware.Compress(6, "gzip"))
+	//route.Use(md.RequestLoggerFilter)
+	//route.Use(render.SetContentType(render.ContentTypeJSON))
 
 	route.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Welcome"))
+	})
+
+	route.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(404)
+		w.Write([]byte("错误,未找到请求路径"))
+	})
+
+	route.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(405)
+		w.Write([]byte("非法的method请求"))
 	})
 
 	route.Route("/api/v1", func(r chi.Router) {
@@ -43,6 +52,6 @@ func main() {
 		fmt.Printf("Logging error: %s\n", err.Error())
 	}
 
-	logger.Log().Info("Hook api启动成功.")
+	logger.Log().Info("dump文件服务器启动成功.")
 	http.ListenAndServe(config.GetLocalAddress(), route)
 }

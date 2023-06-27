@@ -5,13 +5,17 @@ go 1.20
 require (
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-chi/render v1.0.2
+	github.com/lehoon/hook_api/v2 v2.0.0-20230228024654-2b6d2d00a209
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/spf13/viper v1.15.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 )
 
-require github.com/frankban/quicktest v1.14.4 // indirect
+require (
+	github.com/frankban/quicktest v1.14.4 // indirect
+	github.com/go-chi/chi v1.5.4 // indirect
+)
 
 require (
 	github.com/ajg/form v1.5.1 // indirect

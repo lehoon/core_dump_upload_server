@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"github.com/lehoon/hook_api/v2/library/config"
+	"github.com/lehoon/core_dump_upload_server/v2/library/config"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
