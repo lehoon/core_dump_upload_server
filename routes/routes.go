@@ -36,9 +36,7 @@ func Routes() http.Handler {
 	})
 
 	r.Route("/", func(r chi.Router) {
-		r.Get("/exception", api.QueryOperateCodeMessage)
 		r.Get("/", GetRoutes)
-		r.Post("/notify", api.ShowPostMessage)
 	})
 
 	return r
