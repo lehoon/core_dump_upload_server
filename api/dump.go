@@ -11,6 +11,8 @@ import (
 	"github.com/go-chi/render"
 	"github.com/lehoon/core_dump_upload_server/v2/library/logger"
 	los "github.com/lehoon/core_dump_upload_server/v2/library/os"
+	"github.com/lehoon/core_dump_upload_server/v2/message"
+	"github.com/lehoon/core_dump_upload_server/v2/service"
 )
 
 func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
@@ -79,11 +81,19 @@ func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 	// 将上传的文件内容拷贝到本地文件
 	_, err = io.Copy(uploadedFile, file)
 	if err != nil {
-		logger.Log().Info("拷贝dump文件内容到新文件失败{}", handler.Filename)
+		logger.Log().Infof("拷贝dump文件内容到新文件失败%s", handler.Filename)
 		http.Error(w, "Failed to save file on the server.", http.StatusInternalServerError)
 		return
 	}
 
-	logger.Log().Info("创建dump文件成功{}", handler.Filename)
+	//创建数据库记录
+	record := &message.AppDumpInfo{
+		AppId:      appId,
+		Version:    version,
+		FilePath:   uploadedFile.Name(),
+		RemoteHost: r.RemoteAddr,
+	}
+	service.InsertDumpInfo(record)
+	logger.Log().Infof("创建dump文件成功%s", handler.Filename)
 	render.Respond(w, r, SuccessBizResult())
 }
