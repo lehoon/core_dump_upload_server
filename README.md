@@ -1,0 +1,2 @@
+# core_dump_upload_server
+crashpad上传dump文件，文件服务器
