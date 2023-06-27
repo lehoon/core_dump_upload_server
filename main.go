@@ -54,5 +54,6 @@ func main() {
 	}
 
 	logger.Log().Info("dump文件服务器启动成功.")
+	fmt.Printf("服务准备启动,本地监听地址:%s\n", config.GetLocalAddress())
 	http.ListenAndServe(config.GetLocalAddress(), route)
 }

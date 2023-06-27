@@ -9,15 +9,15 @@ import (
 	"path/filepath"
 
 	"github.com/go-chi/render"
-	los "github.com/lehoon/core_dump_upload_server/v2/library/filesystem"
 	"github.com/lehoon/core_dump_upload_server/v2/library/logger"
+	los "github.com/lehoon/core_dump_upload_server/v2/library/os"
 )
 
 func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 	logger.Log().Info("接收到新的程序dump上传请求.")
 
 	//检查流是否已经配置
-	appId := r.URL.Query().Get("id")
+	appId := r.URL.Query().Get("appId")
 	if appId == "" {
 		logger.Log().Info("未携带有效的appId参数.")
 		render.Respond(w, r, FailureBizResultWithParamError())
