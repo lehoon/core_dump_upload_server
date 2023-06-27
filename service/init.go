@@ -20,9 +20,9 @@ func createDumpTable() {
 
 	appDumpUploadTableSql := `create table if not exists app_dump_upload (
 		 id         INTEGER PRIMARY KEY,
-         appid      varchar(32) NOT NULL,
+         appid      varchar(64) NOT NULL,
 		 version    varchar(32) NOT NULL,
-         filepath   varchar(32) NOT NULL,
+         filepath   varchar(256) NOT NULL,
 		 remotehost varchar(32) NOT NULL,
          created    DATE NOT NULL
          );
@@ -31,7 +31,7 @@ func createDumpTable() {
 	_, err := database.Instance().Exec(appDumpUploadTableSql)
 	if err != nil {
 		logger.Log().Errorf("创建表结构app_dump_upload失败 %v", err)
-		return
+		panic("创建表结构app_dump_upload失败")
 	}
 }
 
@@ -49,6 +49,6 @@ func createSequenceTable() {
 	_, err := database.Instance().Exec(sequenceTableSql)
 	if err != nil {
 		logger.Log().Errorf("创建表结构sequence_info失败 %v", err)
-		return
+		panic("创建自增序列表失败,当前数据库未建立连接")
 	}
 }

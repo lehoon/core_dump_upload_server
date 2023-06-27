@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/render"
 )
 
 func main() {
@@ -22,7 +23,7 @@ func main() {
 	route.Use(middleware.URLFormat)
 	//route.Use(middleware.Compress(6, "gzip"))
 	route.Use(md.RequestLoggerFilter)
-	//route.Use(render.SetContentType(render.ContentTypeJSON))
+	route.Use(render.SetContentType(render.ContentTypeJSON))
 
 	route.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Welcome"))

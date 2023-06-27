@@ -72,7 +72,7 @@ func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 
 	uploadedFile, err := os.Create(filepath.Join("./uploads/"+appId, handler.Filename))
 	if err != nil {
-		logger.Log().Info("创建dump文件失败{}", handler.Filename)
+		logger.Log().Infof("创建dump文件失败,%s", handler.Filename)
 		http.Error(w, "Failed to create file on the server.", http.StatusInternalServerError)
 		return
 	}
