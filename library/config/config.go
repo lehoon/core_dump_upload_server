@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -12,6 +13,13 @@ var (
 
 type Local struct {
 	Address string `yaml:"address"`
+}
+
+type Alarm struct {
+	Address string `yaml:"address"`
+	Url     string `yaml:"url"`
+	Used    bool   `yaml:"used"`
+	Method  string `yaml:"method"`
 }
 
 type Logger struct {
@@ -25,6 +33,7 @@ type Logger struct {
 }
 
 type Config struct {
+	Alarm
 	Local
 	Logger
 }
@@ -41,6 +50,24 @@ func newConfig() *Config {
 
 func GetLocalAddress() string {
 	return config.Local.Address
+}
+
+// alarm config
+func AlarmAddress() string {
+	return config.Alarm.Address
+}
+
+// alarm url
+func AlarmUrl() string {
+	return config.Alarm.Url
+}
+
+func UsedAlarm() bool {
+	return config.Alarm.Used
+}
+
+func AlarmMethod() string {
+	return strings.ToLower(config.Alarm.Method)
 }
 
 func GetLoggerLevel() int {

@@ -7,9 +7,12 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/render"
+	"github.com/lehoon/core_dump_upload_server/v2/library/config"
 	"github.com/lehoon/core_dump_upload_server/v2/library/logger"
+	lhttp "github.com/lehoon/core_dump_upload_server/v2/library/net/http"
 	los "github.com/lehoon/core_dump_upload_server/v2/library/os"
 	"github.com/lehoon/core_dump_upload_server/v2/message"
 	"github.com/lehoon/core_dump_upload_server/v2/service"
@@ -32,6 +35,9 @@ func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 		render.Respond(w, r, FailureBizResultWithParamError())
 		return
 	}
+
+	//发送报警信息
+	defer alarm(appId, version)
 
 	//是否启用gzip压缩
 	contentEncoding := r.Header.Get("Content-Encoding")
@@ -93,7 +99,33 @@ func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 		FilePath:   uploadedFile.Name(),
 		RemoteHost: r.RemoteAddr,
 	}
+
 	service.InsertDumpInfo(record)
 	logger.Log().Infof("创建dump文件成功%s", handler.Filename)
 	render.Respond(w, r, SuccessBizResult())
+}
+
+// 报警功能  发送进程崩溃预警信息
+func alarm(appid, version string) {
+	logger.Log().Errorf("程序[%s]-[%s]崩溃,请及时查看\n", appid, version)
+
+	if !config.UsedAlarm() {
+		logger.Log().Infoln("当前未启用报警功能")
+		return
+	}
+
+	alarm_url := config.AlarmUrl()
+	if strings.HasSuffix(alarm_url, "/") {
+		alarm_url += appid + "/" + version
+	} else {
+		alarm_url += "/" + appid + "/" + version
+	}
+
+	if config.AlarmMethod() == "post" {
+		lhttp.PostUrl(alarm_url)
+	} else if config.AlarmMethod() == "get" {
+		lhttp.Get(alarm_url)
+	} else {
+		logger.Log().Errorf("不支持的报警method值,配置文件中配置为%s\n", config.AlarmMethod())
+	}
 }

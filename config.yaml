@@ -1,6 +1,12 @@
 local:
   address: 0.0.0.0:9099
 
+alarm:
+  address: 0.0.0.0:80
+  url: /api/v1/alarm
+  used: false
+  method: POST
+
 logger:
   maxSize: 32
   maxAge: 7
