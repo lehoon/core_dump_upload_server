@@ -26,7 +26,7 @@ func main() {
 	route.Use(render.SetContentType(render.ContentTypeJSON))
 
 	route.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome"))
+		w.Write([]byte("作为科技core dump文件服务器"))
 	})
 
 	route.NotFound(func(w http.ResponseWriter, r *http.Request) {

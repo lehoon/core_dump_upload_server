@@ -72,11 +72,11 @@ func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Printf(handler.Filename)
 	// 创建一个本地文件来保存上传的文件
-	if !los.IsFileExist("./uploads/" + appId) {
-		los.Mkdir("./uploads/" + appId)
+	if !los.IsFileExist("./uploads/" + appId + "/" + version) {
+		los.Mkdir("./uploads/" + appId + "/" + version)
 	}
 
-	uploadedFile, err := os.Create(filepath.Join("./uploads/"+appId, handler.Filename))
+	uploadedFile, err := os.Create(filepath.Join("./uploads/"+appId+"/"+version, handler.Filename))
 	if err != nil {
 		logger.Log().Infof("创建dump文件失败,%s", handler.Filename)
 		http.Error(w, "Failed to create file on the server.", http.StatusInternalServerError)

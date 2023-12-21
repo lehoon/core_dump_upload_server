@@ -44,7 +44,7 @@ func init() {
 
 	caller := zap.AddCaller()
 	development := zap.Development()
-	field := zap.Fields(zap.String("serviceName", "hook_api"))
+	field := zap.Fields(zap.String("serviceName", "zuowei_core_dumper"))
 	logger := zap.New(loggerCore, caller, development, field)
 	logger.Info("logger初始化完成")
 	log = logger.Sugar()
