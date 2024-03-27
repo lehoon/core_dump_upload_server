@@ -6,6 +6,7 @@ import (
 )
 
 func init() {
+	//初始化数据库
 	createDumpTable()
 	createSequenceTable()
 	logger.Log().Info("database service initialized")
@@ -18,7 +19,7 @@ func createDumpTable() {
 		panic("创建设备表失败,当前数据库未建立连接")
 	}
 
-	appDumpUploadTableSql := `create table if not exists app_dump_upload (
+	var appDumpUploadTableSql = `create table if not exists app_dump_upload (
 		 id         INTEGER PRIMARY KEY,
          appid      varchar(64) NOT NULL,
 		 version    varchar(32) NOT NULL,
@@ -42,10 +43,9 @@ func createSequenceTable() {
 		panic("创建自增序列表失败,当前数据库未建立连接")
 	}
 
-	sequenceTableSql := `create table if not exists sequence_info (
+	var sequenceTableSql = `create table if not exists sequence_info (
          sequenceid integer );
     `
-
 	_, err := database.Instance().Exec(sequenceTableSql)
 	if err != nil {
 		logger.Log().Errorf("创建表结构sequence_info失败 %v", err)

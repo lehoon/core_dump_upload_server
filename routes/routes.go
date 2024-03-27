@@ -13,7 +13,7 @@ type RouteInfo struct {
 	Path   string
 }
 
-var routes = []RouteInfo{}
+var routes []RouteInfo
 
 func PushRoute(method, path string) {
 	routeInfo := RouteInfo{
@@ -32,12 +32,16 @@ func Routes() http.Handler {
 	r := chi.NewRouter()
 
 	r.Route("/dump", func(r chi.Router) {
+		r.Get("/file", api.DumpFileList)
 		r.Post("/upload*", api.UploadDumpFile)
+	})
+
+	r.Route("/dl", func(r chi.Router) {
+		r.Get("/", api.Download)
 	})
 
 	r.Route("/", func(r chi.Router) {
 		r.Get("/", GetRoutes)
 	})
-
 	return r
 }

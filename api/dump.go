@@ -18,6 +18,7 @@ import (
 	"github.com/lehoon/core_dump_upload_server/v2/service"
 )
 
+// UploadDumpFile 上传dump文件
 func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 	logger.Log().Info("接收到新的程序dump上传请求.")
 
@@ -100,7 +101,11 @@ func UploadDumpFile(w http.ResponseWriter, r *http.Request) {
 		RemoteHost: r.RemoteAddr,
 	}
 
-	service.InsertDumpInfo(record)
+	err = service.InsertDumpInfo(record)
+	if err != nil {
+		logger.Log().Infof("保存dump文件上传记录失败%s", handler.Filename)
+	}
+
 	logger.Log().Infof("创建dump文件成功%s", handler.Filename)
 	render.Respond(w, r, SuccessBizResult())
 }
@@ -114,18 +119,24 @@ func alarm(appid, version string) {
 		return
 	}
 
-	alarm_url := config.AlarmUrl()
-	if strings.HasSuffix(alarm_url, "/") {
-		alarm_url += appid + "/" + version
+	alarmUrl := config.AlarmUrl()
+	if strings.HasSuffix(alarmUrl, "/") {
+		alarmUrl += appid + "/" + version
 	} else {
-		alarm_url += "/" + appid + "/" + version
+		alarmUrl += "/" + appid + "/" + version
 	}
 
 	if config.AlarmMethod() == "post" {
-		lhttp.PostUrl(alarm_url)
+		lhttp.PostUrl(alarmUrl)
 	} else if config.AlarmMethod() == "get" {
-		lhttp.Get(alarm_url)
+		lhttp.Get(alarmUrl)
 	} else {
 		logger.Log().Errorf("不支持的报警method值,配置文件中配置为%s\n", config.AlarmMethod())
 	}
+}
+
+// DumpFileList 查询dump文件列表
+func DumpFileList(w http.ResponseWriter, r *http.Request) {
+	//查询数据库 查找dump文件列表 生成json返回数据
+
 }

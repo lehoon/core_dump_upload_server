@@ -14,13 +14,13 @@ func init() {
 	logger.Log().Info("app dump upload service initialized")
 }
 
-// 新增app dump info
+// InsertDumpInfo 新增app dump info
 func InsertDumpInfo(record *message.AppDumpInfo) error {
 	if !database.IsOpen() {
 		return errors.New("数据库未打开,新增失败")
 	}
 
-	streamid_max, err := sequence_no_max()
+	streamidMax, err := sequenceNoMax()
 	if err != nil {
 		logger.Log().Errorf("新增app生成的dump文件记录失败,数据库发送错误, %s,%s", utils.JsonString(record), err.Error())
 		return errors.New("新增app生成的dump文件记录失败,请稍后重试")
@@ -32,11 +32,11 @@ func InsertDumpInfo(record *message.AppDumpInfo) error {
 		return errors.New("新增app生成的dump文件记录失败,请稍后重试")
 	}
 
-	streamid_new_int := string_to_int32(streamid)
+	streamidNewInt := string_to_int32(streamid)
 
-	if streamid_new_int <= streamid_max {
-		streamid_new_int = streamid_max + 1
-		_, err = update_sequence(streamid_new_int)
+	if streamidNewInt <= streamidMax {
+		streamidNewInt = streamidMax + 1
+		_, err = update_sequence(streamidNewInt)
 		if err != nil {
 			logger.Log().Errorf("新增app生成的dump文件记录失败,获取流序列号失败, %s,%s", utils.JsonString(record), err.Error())
 			return errors.New("新增app生成的dump文件记录失败,请稍后重试")
@@ -53,7 +53,7 @@ func InsertDumpInfo(record *message.AppDumpInfo) error {
 	}
 
 	defer insertStmt.Close()
-	_, err = insertStmt.Exec(streamid_new_int, record.AppId, record.Version, record.FilePath, record.RemoteHost)
+	_, err = insertStmt.Exec(streamidNewInt, record.AppId, record.Version, record.FilePath, record.RemoteHost)
 
 	if err != nil {
 		logger.Log().Errorf("新增app生成的dump文件记录数据失败,%s,%s", utils.JsonString(record), err.Error())
@@ -64,12 +64,12 @@ func InsertDumpInfo(record *message.AppDumpInfo) error {
 }
 
 // 查询流最大编号
-func sequence_no_max() (int32, error) {
+func sequenceNoMax() (int32, error) {
 	if !database.IsOpen() {
 		return 0, errors.New("查询app生成的dump文件记录表流序号失败,当前数据库未建立连接")
 	}
 
-	if count_app_dump_table() == 0 {
+	if countAppDumpTable() == 0 {
 		return 0, nil
 	}
 
@@ -98,7 +98,7 @@ func sequence_no_max() (int32, error) {
 }
 
 // 查询app生成的dump文件记录表数量
-func count_app_dump_table() int {
+func countAppDumpTable() int {
 	if !database.IsOpen() {
 		return 0
 	}
